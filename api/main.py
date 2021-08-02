@@ -42,8 +42,9 @@ class BulkGenerate(Resource):
     def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument("amount", type=int)
+        parser.add_argument("seed", type=int)
         args = parser.parse_args()
-        zip_path = gapi.bulk(args.get("amount", None))
+        zip_path = gapi.bulk(args.get("seed", None), args.get("amount", None))
         return send_file(zip_path)
 
 api.add_resource(Generate, "/generate")

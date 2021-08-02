@@ -5,6 +5,7 @@ from io import BytesIO
 from PIL import Image
 from tensorflow import keras
 from tensorflow.keras import layers
+from zipfile import ZipFile
 
 class GenerativeAPI():
     '''
@@ -32,17 +33,44 @@ class GenerativeAPI():
         buff = BytesIO()
         img = Image.fromarray(pred, "RGB")
         img.save(buff, format="PNG")
-        fname = "img/gen-s{0}.png".format(seed)
+        fname = "files/img/gen-s{0}.png".format(seed)
         img.save(fname, format="PNG")
 
         return fname, seed
 
-    def bulk(self, amount=10):
+    def bulk(self, seed=None, amount=32):
         '''
         Method that generates images in bulk.
         Returns the path of the zip containing the generated images.
         '''
-        pass
+        if seed is None:
+            seed = random.randint(0, 1e8)
+        random.seed(seed)
+        tf.random.set_seed(seed)
+
+        if amount is None or amount < 1:
+            amount = 32
+
+        noise = tf.random.normal([amount, 32])
+        pred = self.model.predict(noise)
+        pred = ((0.5 * pred + 0.5) * 256).astype("uint8")
+
+        fnames = []
+        for i, p in enumerate(pred):
+            buff = BytesIO()
+            img = Image.fromarray(p, "RGB")
+            img.save(buff, format="PNG")
+            fname = "files/img/gen-b{0}-{1}.png".format(seed, i+1)
+            fnames.append(fname)
+            img.save(fname, format="PNG")
+
+        fzname = "files/bulk-s{0}-{1}.zip".format(seed, amount)
+        fzip = ZipFile(fzname, "w")
+        for fname in fnames:
+            fzip.write(fname)
+        fzip.close()
+
+        return fzname
 
     def interpolate(self, points=None, steps=10):
         '''
