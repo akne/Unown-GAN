@@ -1,8 +1,5 @@
-import base64
 import random
-import numpy as np
 import tensorflow as tf
-import matplotlib.pyplot as plt
 
 from io import BytesIO
 from PIL import Image
@@ -11,7 +8,8 @@ from tensorflow.keras import layers
 
 class GenerativeAPI():
     '''
-    
+    Class that contains methods that interact directly with the GAN, generating
+    images in both single/bulk amounts and interpolating between points.
     '''
     def __init__(self):
         self.build_generator()
@@ -19,7 +17,8 @@ class GenerativeAPI():
 
     def gen(self, seed=None):
         '''
-        
+        Method that generates a single image.
+        Returns the path of the generated image and the seed.
         '''
         if seed is None:
             seed = random.randint(0, 1e8)
@@ -36,23 +35,26 @@ class GenerativeAPI():
         fname = "img/gen-s{0}.png".format(seed)
         img.save(fname, format="PNG")
 
-        return fname
+        return fname, seed
 
     def bulk(self, amount=10):
         '''
-        
+        Method that generates images in bulk.
+        Returns the path of the zip containing the generated images.
         '''
         pass
 
     def interpolate(self, points=None, steps=10):
         '''
-        
+        Method that generates images interpolating between 2(+) points.
+        Returns the path of the zip containing the generated images.
         '''
         pass
 
     def build_generator(self):
         '''
-        
+        Builds the generator model to allow weights to be loaded.
+        Could be replaced by compiling the model and loading it instead.
         '''
         inputs = keras.Input(shape=(32,))
         x = layers.Dense(5*5*512)(inputs)
