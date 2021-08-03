@@ -1,4 +1,5 @@
 import random
+import numpy as np
 import tensorflow as tf
 
 from io import BytesIO
@@ -72,12 +73,56 @@ class GenerativeAPI():
 
         return fzname
 
-    def interpolate(self, points=None, steps=10):
+    def interpolate(self, seeds=None, steps=10):
         '''
         Method that generates images interpolating between 2(+) points.
         Returns the path of the zip containing the generated images.
         '''
-        pass
+        points = []
+
+        if seeds is None:
+            seeds = [random.randint(0, 1e8), random.randint(0, 1e8)]
+        elif type(seeds) == str:
+            seeds = [int(s) for s in seeds.split(",")]
+        elif len(seeds) == 1:
+            seeds.append(random.randint(0, 1e8))
+
+        for seed in seeds:
+            random.seed(seed)
+            tf.random.set_seed(seed)
+            points.append(tf.random.normal([1, 32]))
+        
+        if steps is None:
+            steps = 10
+
+        noise = []
+        for i in range(len(points)):
+            if i == 0:
+                continue
+            else:
+                percents = np.linspace(0, 1, num=steps)
+                i_noise = [((1.0 - p) * points[i-1]) + (p * points[i]) for p in percents]
+                noise.append(i_noise)
+        noise = np.array(noise).reshape(((len(points) - 1) * steps, points[0].shape[1]))
+        pred = self.model.predict(noise)
+        pred = ((0.5 * pred + 0.5) * 256).astype("uint8")
+
+        fnames = []
+        for i, p in enumerate(pred):
+            buff = BytesIO()
+            img = Image.fromarray(p, "RGB")
+            img.save(buff, format="PNG")
+            fname = "files/img/gen-i{0}-{1}.png".format("_".join([str(s) for s in seeds]), i+1)
+            fnames.append(fname)
+            img.save(fname, format="PNG")
+        
+        fzname = "files/interpolate-s{0}-st{1}.zip".format("_".join([str(s) for s in seeds]), steps)
+        fzip = ZipFile(fzname, "w")
+        for fname in fnames:
+            fzip.write(fname)
+        fzip.close()
+
+        return fzname
 
     def build_generator(self):
         '''

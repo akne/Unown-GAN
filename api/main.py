@@ -28,10 +28,10 @@ class Interpolate(Resource):
     '''
     def get(self):
         parser = reqparse.RequestParser()
-        parser.add_argument("points", type=list)
+        parser.add_argument("seeds", type=str)
         parser.add_argument("steps", type=int)
         args = parser.parse_args()
-        zip_path = gapi.interpolate(args.get("points", None), args.get("steps", None))
+        zip_path = gapi.interpolate(args.get("seeds", None), args.get("steps", None))
         return send_file(zip_path)
 
 class BulkGenerate(Resource):
