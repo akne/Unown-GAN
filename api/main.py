@@ -2,10 +2,12 @@ from flask import Flask, send_file;
 from flask_restful import reqparse, Resource, Api;
 
 from gan_api import GenerativeAPI;
+from daemon import Daemon
 
 app = Flask(__name__)
 api = Api(app)
 gapi = GenerativeAPI()
+dmon = Daemon()
 
 class Generate(Resource):
     '''

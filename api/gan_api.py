@@ -1,3 +1,4 @@
+import configparser
 import random
 import numpy as np
 import tensorflow as tf
@@ -17,17 +18,24 @@ class GenerativeAPI():
         self.build_generator()
         self.model.load_weights("gen_weights.h5")
 
-    def gen(self, seed=None):
-        '''
-        Method that generates a single image.
-        Returns the path of the generated image and the seed.
-        '''
+    def set_seed(self, seed=None):
         if seed is None:
             seed = random.randint(0, 1e8)
         random.seed(seed)
         tf.random.set_seed(seed)
 
-        noise = tf.random.normal([1, 32])
+        return seed
+
+    def get_noise(self, amount=1):
+        return tf.random.normal([amount, 32])
+
+    def gen(self, seed=None):
+        '''
+        Method that generates a single image.
+        Returns the path of the generated image and the seed.
+        '''
+        seed = self.set_seed(seed)
+        noise = self.get_noise()
         pred = self.model.predict(noise)
         pred = ((0.5 * pred[0] + 0.5) * 256).astype("uint8")
 
@@ -44,15 +52,12 @@ class GenerativeAPI():
         Method that generates images in bulk.
         Returns the path of the zip containing the generated images.
         '''
-        if seed is None:
-            seed = random.randint(0, 1e8)
-        random.seed(seed)
-        tf.random.set_seed(seed)
+        seed = self.set_seed(seed)
 
         if amount is None or amount < 1:
             amount = 32
 
-        noise = tf.random.normal([amount, 32])
+        noise = self.get_noise(amount)
         pred = self.model.predict(noise)
         pred = ((0.5 * pred + 0.5) * 256).astype("uint8")
 
@@ -88,9 +93,8 @@ class GenerativeAPI():
             seeds.append(random.randint(0, 1e8))
 
         for seed in seeds:
-            random.seed(seed)
-            tf.random.set_seed(seed)
-            points.append(tf.random.normal([1, 32]))
+            self.set_seed(seed)
+            points.append(self.get_noise())
         
         if steps is None:
             steps = 10
