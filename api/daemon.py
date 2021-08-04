@@ -1,9 +1,8 @@
-import configparser
 import threading
 import time
 import os
 
-CFG_PATH = "config.ini"
+from cfg_parser import CFGParser
 
 class Daemon():
     """
@@ -19,10 +18,7 @@ class Daemon():
         Checks the directory structure and fixes it if it doesn't 
         match the config file.
         """
-        cfg = configparser.ConfigParser()
-        with open(CFG_PATH) as f:
-            cfg.read_file(f)
-        path = cfg["DEFAULT"]["Path"]
+        path = CFGParser().get_path()
         if not os.path.exists(path):
             os.mkdir(path)
             os.mkdir("{0}/img".format(path))
@@ -32,11 +28,9 @@ class Daemon():
         Clears all generated files if they are older than the
         interval specified in the config file.
         """
-        cfg = configparser.ConfigParser()
-        with open(CFG_PATH) as f:
-            cfg.read_file(f)
-        path = cfg["DEFAULT"]["Path"]
-        expire = int(cfg["DEFAULT"]["FileExpiryInterval"])
+        cfg = CFGParser()
+        path = cfg.get_path()
+        expire = cfg.get_expire()
         cur_time = time.time()
 
         files = []
@@ -60,9 +54,6 @@ class Daemon():
         Infinite loop that clears generated files and sleeps.
         """
         while(True):
-            cfg = configparser.ConfigParser()
-            with open(CFG_PATH) as f:
-                cfg.read_file(f)
             self.clean_old()
-            time.sleep(int(cfg["DEFAULT"]["DelayInterval"]))
+            time.sleep(CFGParser().get_delay())
         

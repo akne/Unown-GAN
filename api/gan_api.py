@@ -1,4 +1,3 @@
-import configparser
 import random
 import numpy as np
 import tensorflow as tf
@@ -8,6 +7,8 @@ from PIL import Image
 from tensorflow import keras
 from tensorflow.keras import layers
 from zipfile import ZipFile
+
+from cfg_parser import CFGParser
 
 class GenerativeAPI():
     '''
@@ -19,6 +20,10 @@ class GenerativeAPI():
         self.model.load_weights("gen_weights.h5")
 
     def set_seed(self, seed=None):
+        """
+        Sets and returns the seed, generating one if one
+        isn't supplied.
+        """
         if seed is None:
             seed = random.randint(0, 1e8)
         random.seed(seed)
@@ -27,6 +32,9 @@ class GenerativeAPI():
         return seed
 
     def get_noise(self, amount=1):
+        """
+        Returns noise usable by the model.
+        """
         return tf.random.normal([amount, 32])
 
     def gen(self, seed=None):
@@ -42,35 +50,35 @@ class GenerativeAPI():
         buff = BytesIO()
         img = Image.fromarray(pred, "RGB")
         img.save(buff, format="PNG")
-        fname = "files/img/gen-s{0}.png".format(seed)
+        fname = "{0}/img/gen-s{1}.png".format(CFGParser().get_path(), seed)
         img.save(fname, format="PNG")
 
         return fname, seed
 
-    def bulk(self, seed=None, amount=32):
+    def bulk(self, seed=None, amount=None):
         '''
         Method that generates images in bulk.
         Returns the path of the zip containing the generated images.
         '''
         seed = self.set_seed(seed)
-
         if amount is None or amount < 1:
-            amount = 32
+            amount = CFGParser().get_amount()
 
         noise = self.get_noise(amount)
         pred = self.model.predict(noise)
         pred = ((0.5 * pred + 0.5) * 256).astype("uint8")
 
+        path = CFGParser().get_path()
         fnames = []
         for i, p in enumerate(pred):
             buff = BytesIO()
             img = Image.fromarray(p, "RGB")
             img.save(buff, format="PNG")
-            fname = "files/img/gen-b{0}-{1}.png".format(seed, i+1)
+            fname = "{0}/img/gen-b{1}-{2}.png".format(path, seed, i+1)
             fnames.append(fname)
             img.save(fname, format="PNG")
 
-        fzname = "files/bulk-s{0}-{1}.zip".format(seed, amount)
+        fzname = "{0}/bulk-s{1}-{2}.zip".format(path, seed, amount)
         fzip = ZipFile(fzname, "w")
         for fname in fnames:
             fzip.write(fname)
@@ -78,13 +86,11 @@ class GenerativeAPI():
 
         return fzname
 
-    def interpolate(self, seeds=None, steps=10):
+    def interpolate(self, seeds=None, steps=None):
         '''
         Method that generates images interpolating between 2(+) points.
         Returns the path of the zip containing the generated images.
         '''
-        points = []
-
         if seeds is None:
             seeds = [random.randint(0, 1e8), random.randint(0, 1e8)]
         elif type(seeds) == str:
@@ -92,12 +98,13 @@ class GenerativeAPI():
         elif len(seeds) == 1:
             seeds.append(random.randint(0, 1e8))
 
+        points = []
         for seed in seeds:
             self.set_seed(seed)
             points.append(self.get_noise())
         
         if steps is None:
-            steps = 10
+            steps = CFGParser().get_steps()
 
         noise = []
         for i in range(len(points)):
@@ -111,16 +118,17 @@ class GenerativeAPI():
         pred = self.model.predict(noise)
         pred = ((0.5 * pred + 0.5) * 256).astype("uint8")
 
+        path = CFGParser().get_path()
         fnames = []
         for i, p in enumerate(pred):
             buff = BytesIO()
             img = Image.fromarray(p, "RGB")
             img.save(buff, format="PNG")
-            fname = "files/img/gen-i{0}-{1}.png".format("_".join([str(s) for s in seeds]), i+1)
+            fname = "{0}/img/gen-i{1}-{2}.png".format(path, "_".join([str(s) for s in seeds]), i+1)
             fnames.append(fname)
             img.save(fname, format="PNG")
         
-        fzname = "files/interpolate-s{0}-st{1}.zip".format("_".join([str(s) for s in seeds]), steps)
+        fzname = "{0}/interpolate-s{1}-st{2}.zip".format(path, "_".join([str(s) for s in seeds]), steps)
         fzip = ZipFile(fzname, "w")
         for fname in fnames:
             fzip.write(fname)
