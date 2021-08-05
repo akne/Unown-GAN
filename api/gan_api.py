@@ -1,3 +1,4 @@
+import imageio
 import random
 import os
 import numpy as np
@@ -122,7 +123,7 @@ class GenerativeAPI():
     def interpolate(self, seeds=None, steps=None):
         '''
         Method that generates images interpolating between 2(+) points.
-        Returns the path of the zip containing the generated images.
+        Returns the path of the created animation (as .gif).
         '''
         if seeds is None:
             seeds = [self.get_seed(), self.get_seed()]
@@ -135,7 +136,7 @@ class GenerativeAPI():
             steps = CFGParser().get_steps()
 
         name = self.hash_request(["interpolate", steps, *seeds])
-        path, exists = self.check_exists(name, "zip")
+        path, exists = self.check_exists(name, "gif")
         if exists:
             return path
 
@@ -154,16 +155,16 @@ class GenerativeAPI():
         pred = ((0.5 * pred + 0.5) * 256).astype("uint8")
 
         fnames = []
+        imgs = []
         for i, p in enumerate(pred):
             img = Image.fromarray(p, "RGB")
             fname = "{0}/img/{1}-{2}.png".format(CFGParser().get_path(), name, i+1)
             fnames.append(fname)
             img.save(fname, format="PNG")
+            imgs.append(img)
+        imgs += imgs[::-1]
         
-        fzip = ZipFile(path, "w")
-        for fname in fnames:
-            fzip.write(fname)
-        fzip.close()
+        imageio.mimsave(path, imgs)
 
         return path
 
