@@ -8,8 +8,6 @@ from tensorflow import keras
 from tensorflow.keras import layers
 from zipfile import ZipFile
 
-from tensorflow.python.keras.utils.generic_utils import default
-
 from cfg_parser import CFGParser
 
 class GenerativeAPI():
