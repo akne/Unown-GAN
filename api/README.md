@@ -10,6 +10,8 @@ For a production build, the API can be setup by using the Dockerfile (soon) via 
 ## Functionality / Endpoints
 Alongside the endpoints, the API currently has features setup to automatically delete generated files after a set amount of time (e.g.: 3 hours), and many of the default values and paths can be configured by editing `config.ini`.
 
+The API is also (or should be) fully reusable with other GANs, as long as the name parameter for the GenerativeAPI class matches the path to your desired model - which can also be done by editing `config.ini`. ***This hasn't been tested, but it should work with models that produce images in both RGB and RGBA formats, and models that have varying noise input sizes.***
+
 *There are plans to implement additional features, such as basic logging (requests + status, errors, etc).*
 
 The endpoints of the API, parameters, and functionality are as follows:

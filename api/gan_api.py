@@ -6,7 +6,6 @@ import tensorflow as tf
 
 from PIL import Image
 from tensorflow import keras
-from tensorflow.keras import layers
 from zipfile import ZipFile
 
 from cfg_parser import CFGParser
@@ -16,9 +15,16 @@ class GenerativeAPI():
     Class that contains methods that interact directly with the GAN, generating
     images in both single/bulk amounts and interpolating between points.
     '''
-    def __init__(self):
-        self.build_generator()
-        self.model.load_weights("gen_weights.h5")
+    def __init__(self, name=None):
+        if name is None:
+            name = CFGParser().get_model()
+        self.model = keras.models.load_model(name)
+        self.noise_dim = self.model.layers[0].output_shape[0][1]
+        self.channels = self.model.layers[-1].output_shape[-1]
+        if self.channels == 3:
+            self.img_cf = "RGB"
+        elif self.channels == 4:
+            self.img_cf = "RGBA"
 
     def hash_request(self, args):
         """
@@ -67,7 +73,7 @@ class GenerativeAPI():
         """
         Returns noise usable by the model.
         """
-        return tf.random.normal([amount, 32])
+        return tf.random.normal([amount, self.noise_dim])
 
     def gen(self, seed=None):
         '''
@@ -84,7 +90,7 @@ class GenerativeAPI():
         pred = self.model.predict(noise)
         pred = ((0.5 * pred[0] + 0.5) * 256).astype("uint8")
 
-        img = Image.fromarray(pred, "RGB")
+        img = Image.fromarray(pred, self.img_cf)
         img.save(path, format="PNG")
 
         return path, seed
@@ -108,7 +114,7 @@ class GenerativeAPI():
 
         fnames = []
         for i, p in enumerate(pred):
-            img = Image.fromarray(p, "RGB")
+            img = Image.fromarray(p, self.img_cf)
             fname = "{0}/img/{1}-{2}.png".format(CFGParser().get_path(), name, i+1)
             fnames.append(fname)
             img.save(fname, format="PNG")
@@ -157,7 +163,7 @@ class GenerativeAPI():
         fnames = []
         imgs = []
         for i, p in enumerate(pred):
-            img = Image.fromarray(p, "RGB")
+            img = Image.fromarray(p, self.img_cf)
             fname = "{0}/img/{1}-{2}.png".format(CFGParser().get_path(), name, i+1)
             fnames.append(fname)
             img.save(fname, format="PNG")
@@ -167,32 +173,3 @@ class GenerativeAPI():
         imageio.mimsave(path, imgs)
 
         return path
-
-    def build_generator(self):
-        '''
-        Builds the generator model to allow weights to be loaded.
-        Could be replaced by compiling the model and loading it instead.
-        '''
-        inputs = keras.Input(shape=(32,))
-        x = layers.Dense(5*5*512)(inputs)
-        x = layers.LeakyReLU(0.2)(x)
-        x = layers.Reshape((5,5,512))(x)
-
-        x = layers.Conv2DTranspose(256, 4, strides=1, padding="same", use_bias=False)(x)
-        x = layers.BatchNormalization(momentum=0.8)(x)
-        x = layers.LeakyReLU(0.2)(x)
-
-        x = layers.Conv2DTranspose(128, 4, strides=2, padding="same", use_bias=False)(x)
-        x = layers.BatchNormalization(momentum=0.8)(x)
-        x = layers.LeakyReLU(0.2)(x)
-
-        x = layers.Conv2DTranspose(64, 4, strides=2, padding="same", use_bias=False)(x)
-        x = layers.BatchNormalization(momentum=0.8)(x)
-        x = layers.LeakyReLU(0.2)(x)
-
-        x = layers.Conv2DTranspose(32, 4, strides=2, padding="same", use_bias=False)(x)
-        x = layers.BatchNormalization(momentum=0.8)(x)
-        x = layers.LeakyReLU(0.2)(x)
-
-        output = layers.Conv2DTranspose(3, 4, strides=2, padding="same", use_bias=False, activation="tanh")(x)
-        self.model = keras.Model(inputs=inputs, outputs=output)

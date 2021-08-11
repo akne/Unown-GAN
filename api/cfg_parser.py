@@ -29,6 +29,12 @@ class CFGParser():
         """
         return int(self.cfg["DEFAULT"]["DelayInterval"])
 
+    def get_model(self):
+        """
+        Returns the path to the compiled generator model.
+        """
+        return self.cfg["API"]["Model"]
+
     def get_steps(self):
         """
         Returns the default number of interpolation steps.
