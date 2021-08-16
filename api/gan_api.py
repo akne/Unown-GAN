@@ -100,9 +100,12 @@ class GenerativeAPI():
         Method that generates images in bulk.
         Returns the path of the zip containing the generated images.
         '''
+        cfg = CFGParser()
         seed = self.set_seed(seed)
         if amount is None or amount < 1:
-            amount = CFGParser().get_amount()
+            amount = cfg.get_amount()
+        elif amount > cfg.get_max_bulk():
+            amount = cfg.get_max_bulk()
         name = self.hash_request(["bulk", amount, seed])
         path, exists = self.check_exists(name, "zip")
         if exists:
@@ -131,6 +134,7 @@ class GenerativeAPI():
         Method that generates images interpolating between 2(+) points.
         Returns the path of the created animation (as .gif).
         '''
+        cfg = CFGParser()
         if seeds is None:
             seeds = [self.get_seed(), self.get_seed()]
         elif type(seeds) == str:
@@ -139,7 +143,9 @@ class GenerativeAPI():
             seeds.append(self.get_seed())
 
         if steps is None:
-            steps = CFGParser().get_steps()
+            steps = cfg.get_steps()
+        elif steps * (len(seeds) - 1) > cfg.get_max_frames():
+            steps = cfg.get_max_frames() // (len(seeds) - 1)
 
         name = self.hash_request(["interpolate", steps, *seeds])
         path, exists = self.check_exists(name, "gif")

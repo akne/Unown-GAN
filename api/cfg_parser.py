@@ -41,8 +41,20 @@ class CFGParser():
         """
         return int(self.cfg["API"]["StepsAmount"])
     
+    def get_max_frames(self):
+        """
+        Returns the maximum number of frames for an animation.
+        """
+        return int(self.cfg["API"]["FramesMax"])
+
     def get_amount(self):
         """
         Returns the default bulk file amount.
         """
         return int(self.cfg["API"]["BulkAmount"])
+
+    def get_max_bulk(self):
+        """
+        Returns the maximum number of images for a bulk request.
+        """
+        return int(self.cfg["API"]["BulkMax"])
