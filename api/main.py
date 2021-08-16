@@ -54,4 +54,4 @@ api.add_resource(Interpolate, "/interpolate")
 api.add_resource(BulkGenerate, "/bulk")
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host="0.0.0.0")

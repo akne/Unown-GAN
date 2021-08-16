@@ -4,8 +4,10 @@ The API can be started by installing the required modules (in `requirements.txt`
  * `pip install -r requirements.txt`
  * `python main.py`
 
-For a production build, the API can be setup by using the Dockerfile (soon) via the following instructions:
- * `docker ...`
+Alternatively, the API can be setup by using the Dockerfile (dev build - production build soon) via the following instructions:
+ * `docker build --tag unown-api-dev -f Dockerfile.dev .`
+ * `docker run -p PORT:5000 unown-api-dev`
+Where `PORT` refers to the desired port on the host machine (e.g. 443, 80, etc).
 
 ## Functionality / Endpoints
 Alongside the endpoints, the API currently has features setup to automatically delete generated files after a set amount of time (e.g.: 3 hours), and many of the default values and paths can be configured by editing `config.ini`.

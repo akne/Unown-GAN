@@ -144,7 +144,7 @@ class GenerativeAPI():
 
         if steps is None:
             steps = cfg.get_steps()
-        elif steps * (len(seeds) - 1) > cfg.get_max_frames():
+        if steps * (len(seeds) - 1) > cfg.get_max_frames():
             steps = cfg.get_max_frames() // (len(seeds) - 1)
 
         name = self.hash_request(["interpolate", steps, *seeds])
