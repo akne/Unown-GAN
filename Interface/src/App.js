@@ -1,24 +1,24 @@
-import logo from './logo.svg';
+import { useGenerate, useInterpolate } from './api';
+import { useState } from 'react';
+
 import './App.css';
 
 function App() {
+  const [seed, setSeed] = useState("");
+  const [image, error] = useInterpolate(seed, "");
+
+  // converting blob to image
+  let img = "";
+  try {
+    img = window.URL.createObjectURL(image);
+  }
+  catch(e) {
+    console.log(e)
+  }
+  console.log(typeof img);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <img src={img}/>
   );
 }
 
