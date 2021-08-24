@@ -13,7 +13,11 @@ function getGenerate(seed) {
         url += `?seed=${seed}`;
     }
 
-    return fetch(url).then(res => res.blob());
+    return fetch(url, {
+        headers: {
+            'Cache-Control': 'no-cache'
+        }
+    }).then(res => res.blob());
 }
 
 /**
@@ -60,7 +64,11 @@ function getInterpolate(seeds, steps) {
         url += `?steps=${steps}`;
     }
 
-    return fetch(url).then(res => res.blob());
+    return fetch(url, {
+        headers: {
+            'Cache-Control': 'no-cache'
+        }
+    }).then(res => res.blob());
 }
 
 /**
