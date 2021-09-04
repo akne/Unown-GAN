@@ -65,7 +65,11 @@ function getBulk(seed, amount) {
         url += `?amount=${amount}`;
     }
 
-    return fetch(url);
+    return fetch(url, {
+        headers: {
+            'Cache-Control': 'no-cache'
+        }
+    });
 }
 
 /**
