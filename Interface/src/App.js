@@ -1,9 +1,7 @@
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 
 import Home from "./pages/home";
-import Generate from "./pages/generate";
-import Interpolate from "./pages/interpolate";
-import Bulk from "./pages/bulk";
+import API from "./pages/api";
 import Unavailable from "./pages/unavailable";
 
 import './App.css';
@@ -13,13 +11,12 @@ import './App.css';
  * @returns 
  */
 function Header() {
+  // TODO: stylise nav (or remove entirely)
   return (
     <div id="nav-wrap">
       <nav>
         <a href="/">Unown-GAN</a>
-        <a href="/generate">Generate</a>
-        <a href="/interpolate">Interpolate</a>
-        <a href="/bulk">Bulk</a>
+        <a href="/api">API</a>
       </nav>
     </div>
   )
@@ -36,9 +33,7 @@ function App() {
         <Header/>
         <Switch>
           <Route exact path="/" component={Home}/>
-          <Route exact path="/generate" component={Generate}/>
-          <Route exact path="/interpolate" component={Interpolate}/>
-          <Route exact path="/bulk" component={Bulk}/>
+          <Route exact path="/api" component={API}/>
           <Route path="/unavailable" component={Unavailable}/>
           <Redirect to="/unavailable"/>
         </Switch>

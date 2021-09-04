@@ -139,7 +139,7 @@ class GenerativeAPI():
             seeds = [self.get_seed(), self.get_seed()]
         elif type(seeds) == str:
             seeds = [int(s) for s in seeds.split(",")]
-        elif len(seeds) == 1:
+        if len(seeds) == 1:
             seeds.append(self.get_seed())
 
         if steps is None:

@@ -22,31 +22,6 @@ function getGenerate(seed) {
 
 /**
  * 
- * @param {*} seed 
- * @returns 
- */
-export function useGenerate(seed) {
-    const [img, setImg] = useState("");
-    const [error, setError] = useState(null);
-
-    useEffect(
-        () => {
-            getGenerate(seed)
-            .then(res => {
-                setImg(res);
-            })
-            .catch(e => {
-                setError(e);
-            });
-        }, 
-        [seed]
-    );
-    
-    return [img, error];
-}
-
-/**
- * 
  * @param {*} seeds 
  * @param {*} steps 
  * @returns 
@@ -73,33 +48,6 @@ function getInterpolate(seeds, steps) {
 
 /**
  * 
- * @param {*} seeds 
- * @param {*} steps 
- * @returns 
- */
-export function useInterpolate(seeds, steps) {
-    const [ani, setAni] = useState("");
-    const [error, setError] = useState(null);
-
-    useEffect(
-        () => {
-            getInterpolate(seeds, steps)
-            .then(res => {
-                setAni(res);
-            })
-            .catch(e => {
-                setError(e);
-            });
-        },
-        [seeds, steps]
-    );
-
-    return [ani, error];
-
-}
-
-/**
- * 
  * @param {*} seed 
  * @param {*} amount 
  * @returns 
@@ -122,26 +70,43 @@ function getBulk(seed, amount) {
 
 /**
  * 
- * @param {*} seed 
- * @param {*} amount 
+ * @param {*} req 
  * @returns 
  */
-export function useBulk(seed, amount) {
-    const [bulk, setBulk] = useState([]);
+function getRequest(req) {
+    switch(req.route) {
+        case "generate":
+            return getGenerate(req.seed);
+        case "interpolate":
+            return getInterpolate(req.seed, req.steps);
+        case "bulk":
+            return getBulk(req.seed, req.amount);
+        default:
+            return getGenerate(req.seed);
+    }
+}
+
+/**
+ * 
+ * @param {*} req 
+ * @returns 
+ */
+export function useRequest(req) {
+    const [res, setRes] = useState("");
     const [error, setError] = useState(null);
 
     useEffect(
         () => {
-            getBulk(seed, amount)
-            .then(res => {
-                setBulk(res);
+            getRequest(req)
+            .then(r => {
+                setRes(r);
             })
             .catch(e => {
                 setError(e);
             });
         },
-        [seed, amount]
+        [req]
     );
 
-    return {bulk, error};
+    return [res, error];
 }
