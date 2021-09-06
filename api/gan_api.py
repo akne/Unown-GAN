@@ -123,8 +123,8 @@ class GenerativeAPI():
             img.save(fname, format="PNG")
 
         fzip = ZipFile(path, "w")
-        for fname in fnames:
-            fzip.write(fname)
+        for i in range(len(fnames)):
+            fzip.write(fnames[i], "{0}-{1}.png".format(name, i))
         fzip.close()
 
         return path

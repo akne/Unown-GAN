@@ -69,7 +69,7 @@ function getBulk(seed, amount) {
         headers: {
             'Cache-Control': 'no-cache'
         }
-    });
+    }).then(res => res.blob());
 }
 
 /**
