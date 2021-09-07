@@ -47,14 +47,15 @@ export default function API() {
     );
 
     // TODO: stylise page
-    // TODO: media query to properly handle mobile devices
     // TODO: appropriate error messages
     // TODO: form validation
+    // TODO: button to download images
+    // TODO: option to clear history / remove specific images
     return (
         <div>
             <div id="controller">
                 <div id="preview">
-                    {error ? <p>Something went wrong</p> : <img src={imgs[0]} alt="randomly generated unown-sprite"/>}
+                    {error ? <p>Something went wrong</p> : <img id="preview-img" src={imgs[0]} alt="randomly generated unown-sprite"/>}
                 </div>
                 <div id="options">
                     <form onSubmit={e => {
@@ -99,7 +100,11 @@ export default function API() {
                 </div>
             </div>
             <div id="thumbnails">
-                {imgs.slice().reverse().map(img => (<img src={img} alt="randomly generated unown-sprite"/>))}
+                <h2>History</h2>
+                {imgs.slice().reverse().map(img => (<img src={img} onClick={() => {
+                    let prev = document.getElementById("preview-img");
+                    prev.src = img;
+                }} alt="randomly generated unown-sprite"/>))}
             </div>
         </div>
     )
