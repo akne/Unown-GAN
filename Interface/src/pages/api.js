@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { saveAs } from "file-saver";
 
 import { useRequest } from "../api";
 
@@ -50,7 +51,6 @@ export default function API() {
     // TODO: appropriate error messages
     // TODO: form validation
     // TODO: button to download images
-    // TODO: option to clear history / remove specific images
     return (
         <div>
             <div id="controller">
@@ -101,6 +101,22 @@ export default function API() {
             </div>
             <div id="thumbnails">
                 <h2>History</h2>
+                <button onClick={() => {
+                    setImgs([imgs[0]])
+                }}>Clear</button>
+                <button onClick={() => {
+                    let zip = new JSZip();
+                    for(let i = 0; i < imgs.length; i++) {
+                        let blob = fetch(imgs[i]).then(res => res.blob());
+                        console.log(blob.type);
+                        zip.file(`${i}.png`, blob);
+                    }
+                    zip.generateAsync({type: "blob"})
+                    .then(content => {
+                        saveAs(content, "download.zip");
+                    });
+                }}>Download</button>
+                <br/>
                 {imgs.slice().reverse().map(img => (<img src={img} onClick={() => {
                     let prev = document.getElementById("preview-img");
                     prev.src = img;

@@ -1,5 +1,5 @@
 body {
-  background: #fafafa;
+  background: #f5f5f5;
 }
 
 .App {
@@ -12,7 +12,7 @@ body {
 
 #nav-wrap nav a {
   padding: 10px 10px;
-  background: #fafafa;
+  background: #f5f5f5;
   text-decoration: none;
   color: #3e3e3e;
   font-size: 1.1em;
@@ -23,7 +23,7 @@ body {
 
 #nav-wrap nav a:hover {
   background: #3e3e3e;
-  color: #fafafa;
+  color: #f5f5f5;
   transition: 0.2s;
 }
 
@@ -33,7 +33,10 @@ body {
   margin-left: auto;
   margin-right: auto;
   max-width: 720px;
-  padding: 10px;
+  background: #fafafa;
+  padding: 10px 10px 7px 10px;
+  border-radius: 5px;
+  box-shadow: 0px 2px 5px 1px rgba(0, 0, 0, 0.15);
 }
 
 #controller #preview {
@@ -43,6 +46,8 @@ body {
 
 #controller #preview img {
   width: 100%;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.05);
 }
 
 #controller #options {
@@ -76,20 +81,34 @@ body {
 }
 
 #thumbnails {
-  max-width: 700px;
+  max-width: 720px;
   border-radius: 5px;
-  background: #eeeeee;
+  background: #fafafa;
   padding: 10px;
-  margin: 10px auto 20px auto;
+  padding-bottom: 20px;
+  margin: 20px auto 20px auto;
+  box-shadow: 0px 2px 5px 1px rgba(0, 0, 0, 0.15);
 }
 
 #thumbnails h2 {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-weight: 400;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#thumbnails button {
+  padding: 7px;
+  margin: 5px 3px 15px 3px;
+  width: 90px;
+  cursor: pointer;
 }
 
 #thumbnails img {
-  padding: 3px 5px;
+  margin: 3px 5px;
+  max-width: 80px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.05);
 }
 
 @media (max-width: 500px) {
@@ -99,5 +118,9 @@ body {
 
   #controller #preview {
     width: 100vw;
+  }
+
+  #thumbnails {
+    margin-bottom: 0;
   }
 }
