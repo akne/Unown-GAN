@@ -6,8 +6,8 @@ import { useRequest } from "../api";
 let JSZip = require("jszip");
 
 /**
- * 
- * @returns 
+ * Function that creates the API form and display.
+ * @returns A div containing the preview, form, and thumbnails.
  */
 export default function API() {
     const [route, setRoute] = useState("gen");
@@ -22,6 +22,23 @@ export default function API() {
         amount: ""
     });
     const [data, error] = useRequest(req);
+
+    /**
+     * Method that adds each generated image into a ZIP and downloads it.
+     */
+    const download = () => {
+        let zip = new JSZip();
+
+        for(let i = 0; i < imgs.length; i++) {
+            let blob = fetch(imgs[i]).then(res => res.blob());
+            zip.file(`${i}.png`, blob);
+        }
+
+        zip.generateAsync({type: "blob"})
+        .then(content => {
+            saveAs(content, "download.zip");
+        })               
+    }
 
     useEffect(
         () => {
@@ -50,7 +67,6 @@ export default function API() {
     // TODO: stylise page
     // TODO: appropriate error messages
     // TODO: form validation
-    // TODO: button to download images
     return (
         <div>
             <div id="controller">
@@ -101,26 +117,19 @@ export default function API() {
             </div>
             <div id="thumbnails">
                 <h2>History</h2>
-                <button onClick={() => {
-                    setImgs([imgs[0]])
-                }}>Clear</button>
-                <button onClick={() => {
-                    let zip = new JSZip();
-                    for(let i = 0; i < imgs.length; i++) {
-                        let blob = fetch(imgs[i]).then(res => res.blob());
-                        console.log(blob.type);
-                        zip.file(`${i}.png`, blob);
-                    }
-                    zip.generateAsync({type: "blob"})
-                    .then(content => {
-                        saveAs(content, "download.zip");
-                    });
-                }}>Download</button>
+                <button onClick={() => setImgs([imgs[0]])}>Clear</button>
+                <button onClick={download}>Download</button>
                 <br/>
-                {imgs.slice().reverse().map(img => (<img src={img} onClick={() => {
-                    let prev = document.getElementById("preview-img");
-                    prev.src = img;
-                }} alt="randomly generated unown-sprite"/>))}
+                {
+                    imgs.slice().reverse().map(img => 
+                        (
+                            <img src={img} onClick={() => {
+                                let prev = document.getElementById("preview-img");
+                                prev.src = img;
+                            }} alt="randomly generated unown-sprite"/>
+                        )
+                    )
+                }
             </div>
         </div>
     )

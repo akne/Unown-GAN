@@ -1,30 +1,25 @@
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 
-import Home from "./pages/home";
 import API from "./pages/api";
 import Unavailable from "./pages/unavailable";
 
 import './App.css';
 
 /**
- * 
- * @returns 
+ * Function that contains the structure for the site's header.
+ * @returns A div containing the header (just a heading currently).
  */
 function Header() {
-  // TODO: stylise nav (or remove entirely)
   return (
-    <div id="nav-wrap">
-      <nav>
-        <a href="/">Unown-GAN</a>
-        <a href="/api">API</a>
-      </nav>
+    <div id="header">
+      <h1>Unown-GAN</h1>
     </div>
   )
 }
 
 /**
- * 
- * @returns 
+ * Function that establishes the routes to each page.
+ * @returns A react router with a path to the API and unavailable pages.
  */
 function App() {
   return (
@@ -32,8 +27,7 @@ function App() {
       <div className="App">
         <Header/>
         <Switch>
-          <Route exact path="/" component={Home}/>
-          <Route exact path="/api" component={API}/>
+          <Route exact path="/" component={API}/>
           <Route path="/unavailable" component={Unavailable}/>
           <Redirect to="/unavailable"/>
         </Switch>

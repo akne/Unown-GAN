@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
+
 import API_URL from "./config";
 
 /**
- * 
- * @param {*} seed 
- * @returns 
+ * Function used to call the generate API endpoint.
+ * @param {*} seed A string denoting a seed.
+ * @returns A blob containing the generated image.
  */
 function getGenerate(seed) {
     let url = API_URL + "/generate";
@@ -21,10 +22,10 @@ function getGenerate(seed) {
 }
 
 /**
- * 
- * @param {*} seeds 
- * @param {*} steps 
- * @returns 
+ * Function used to call the interpolate API endpoint.
+ * @param {*} seeds A string denoting a seed or series of seeds (e.g. "1", "47, 38", etc).
+ * @param {*} steps A string denoting the amount of steps taken to interpolate between seeds.
+ * @returns A blob containing the interpolation GIF.
  */
 function getInterpolate(seeds, steps) {
     let url = API_URL + "/interpolate";
@@ -47,10 +48,10 @@ function getInterpolate(seeds, steps) {
 }
 
 /**
- * 
- * @param {*} seed 
- * @param {*} amount 
- * @returns 
+ * Function used to call the bulk generation API endpoint.
+ * @param {*} seed A string denoting a seed.
+ * @param {*} amount A string denoting the amount of images to generate.
+ * @returns A blob containing a ZIP file of images.
  */
 function getBulk(seed, amount) {
     let url = API_URL + "/bulk";
@@ -73,9 +74,9 @@ function getBulk(seed, amount) {
 }
 
 /**
- * 
- * @param {*} req 
- * @returns 
+ * Function used to call other functions depending on the specified route.
+ * @param {*} req An object that contains the fields 'route', 'seed', 'steps', and 'amount'.
+ * @returns A blob containing the API response.
  */
 function getRequest(req) {
     switch(req.route) {
@@ -91,9 +92,9 @@ function getRequest(req) {
 }
 
 /**
- * 
- * @param {*} req 
- * @returns 
+ * Function used to handle an API request.
+ * @param {*} req An object that contains the fields 'route', 'seed', 'steps', and 'amount'.
+ * @returns The API response and error (if one occurred).
  */
 export function useRequest(req) {
     const [res, setRes] = useState("");
