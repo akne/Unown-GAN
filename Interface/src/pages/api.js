@@ -64,21 +64,31 @@ export default function API() {
         [data]
     );
 
-    // TODO: stylise page
     // TODO: appropriate error messages
-    // TODO: form validation
     return (
         <div>
             <div id="controller">
+                {error ? <p>Something went wrong : {error}</p> : null}
                 <div id="preview">
-                    {error ? <p>Something went wrong</p> : <img id="preview-img" src={imgs[0]} alt="randomly generated unown-sprite"/>}
+                    <img id="preview-img" src={imgs[0]} alt="randomly generated unown-sprite"/>
                 </div>
                 <div id="options">
                     <form onSubmit={e => {
                         e.preventDefault();
+
+                        let seedRegex = /^\d+(?:\s*,\s*\d+)*/;
+                        if (route !== "interpolate") {
+                            seedRegex = /\d+/;
+                        }
+                        let match = seed.match(seedRegex);
+                        let theSeed = seed;
+                        if (match) {
+                            theSeed = match[0];
+                        }
+
                         setReq({
                             route: route,
-                            seed: seed,
+                            seed: theSeed,
                             steps: steps,
                             amount: amount,
                         });
@@ -121,12 +131,12 @@ export default function API() {
                 <button onClick={download}>Download</button>
                 <br/>
                 {
-                    imgs.slice().reverse().map(img => 
+                    imgs.slice().reverse().map((img, i) => 
                         (
                             <img src={img} onClick={() => {
                                 let prev = document.getElementById("preview-img");
                                 prev.src = img;
-                            }} alt="randomly generated unown-sprite"/>
+                            }} alt="randomly generated unown-sprite" key={i}/>
                         )
                     )
                 }
