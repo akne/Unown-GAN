@@ -30,8 +30,8 @@ export default function API() {
         let zip = new JSZip();
 
         for(let i = 0; i < imgs.length; i++) {
-            let blob = fetch(imgs[i]).then(res => res.blob());
-            zip.file(`${i}.png`, blob);
+            let blob = fetch(imgs[i].img).then(res => res.blob());
+            zip.file(`${i}.${imgs[i].type}`, blob);
         }
 
         zip.generateAsync({type: "blob"})
@@ -48,7 +48,7 @@ export default function API() {
                         let promises = Object.keys(zData.files).map(fname => {
                             let f = zData.files[fname];
                             return f.async("base64").then(str => {
-                                return "data:image/png;base64," + str;
+                                return {img: "data:image/png;base64," + str, type: "png"};
                             })
                         });
                         return Promise.all(promises);
@@ -56,7 +56,11 @@ export default function API() {
                         setImgs([...strs, ...imgs]);
                     });
                 } else {
-                    setImgs([window.URL.createObjectURL(data), ...imgs]);
+                    let type = "png";
+                    if (req.route === "interpolate") { 
+                        type = "gif";
+                    }
+                    setImgs([{img: window.URL.createObjectURL(data), type: type}, ...imgs]);
                 }
             }
         },
@@ -70,7 +74,7 @@ export default function API() {
             <div id="controller">
                 {error ? <p>Something went wrong : {error}</p> : null}
                 <div id="preview">
-                    <img id="preview-img" src={imgs[0]} alt="randomly generated unown-sprite"/>
+                    <img id="preview-img" src={imgs[0] ? imgs[0].img : null} alt="randomly generated unown-sprite"/>
                 </div>
                 <div id="options">
                     <form onSubmit={e => {
@@ -133,9 +137,9 @@ export default function API() {
                 {
                     imgs.slice().reverse().map((img, i) => 
                         (
-                            <img src={img} onClick={() => {
+                            <img src={img.img} onClick={() => {
                                 let prev = document.getElementById("preview-img");
-                                prev.src = img;
+                                prev.src = img.img;
                             }} alt="randomly generated unown-sprite" key={i}/>
                         )
                     )
