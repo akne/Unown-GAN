@@ -68,11 +68,18 @@ export default function API() {
         [data]
     );
 
-    // TODO: appropriate error messages
+    if(error) {
+        if (error.message === "NetworkError when attempting to fetch resource.") {
+            alert("There was a network error, the server may be offline, or the interface may be running incorrectly.");
+        }
+        else {
+            console.log(error);
+        }
+    }
+
     return (
         <div>
             <div id="controller">
-                {error ? <p>Something went wrong : {error}</p> : null}
                 <div id="preview">
                     <img id="preview-img" src={imgs[0] ? imgs[0].img : null} alt="randomly generated unown-sprite"/>
                 </div>
