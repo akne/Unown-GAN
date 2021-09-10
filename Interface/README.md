@@ -1,7 +1,10 @@
 # Unown-GAN Interface
 ## Setup
-For a smooth deployment, the interface can be set up by using the Dockerfile (soon) via the following instruments:
- * `docker ...`
+For a smooth deployment, the interface can be set up by using the Dockerfile via the following instruments:
+ * `docker build --tag unown-interface -f Dockerfile .`
+ * `docker run -p PORT:80 unown-interface`
+
+Where `PORT` refers to the desired port on the host machine (e.g. 443, 80, etc).
 
 Alternatively, as the interface was bootstrapped using Create React App, the following scripts still apply and can be used instead if desired:
 

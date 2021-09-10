@@ -1,12 +1,13 @@
 # Unown-GAN API
 ## Setup
-The API can be started by installing the required modules (in `requirements.txt` - **Not tested yet**) and starting the `main.py` script as follows:
+The API can be started by installing the required modules (in `requirements.txt`) and starting the `main.py` script as follows:
  * `pip install -r requirements.txt`
  * `python main.py`
 
 Alternatively, the API can be setup by using the Dockerfile (dev build - production build soon) via the following instructions:
  * `docker build --tag unown-api-dev -f Dockerfile.dev .`
  * `docker run -p PORT:5000 unown-api-dev`
+
 Where `PORT` refers to the desired port on the host machine (e.g. 443, 80, etc).
 
 ## Functionality / Endpoints
