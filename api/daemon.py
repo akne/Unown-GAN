@@ -34,8 +34,8 @@ class Daemon():
         cur_time = time.time()
 
         files = []
-        for dir, _, file in os.walk(path):
-            files += [os.path.join(dir, f) for f in file]
+        for directory, _, file in os.walk(path):
+            files += [os.path.join(directory, f) for f in file]
         for f in files:
             if os.stat(f).st_mtime < cur_time - expire:
                 if os.path.isfile(f):

@@ -20,9 +20,9 @@ body {
   margin-right: auto;
   max-width: 720px;
   background: #fafafa;
-  padding: 10px 10px 7px 10px;
+  padding: 10px 10px 7px;
   border-radius: 5px;
-  box-shadow: 0px 2px 5px 1px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 5px 1px rgba(0, 0, 0, 0.15);
 }
 
 #controller #preview {
@@ -33,7 +33,7 @@ body {
 #controller #preview img {
   width: 100%;
   border-radius: 5px;
-  box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.05);
 }
 
 #controller #options {
@@ -72,8 +72,8 @@ body {
   background: #fafafa;
   padding: 10px;
   padding-bottom: 20px;
-  margin: 20px auto 20px auto;
-  box-shadow: 0px 2px 5px 1px rgba(0, 0, 0, 0.15);
+  margin: 20px auto 20px;
+  box-shadow: 0 2px 5px 1px rgba(0, 0, 0, 0.15);
 }
 
 #thumbnails h2 {
@@ -85,7 +85,7 @@ body {
 
 #thumbnails button {
   padding: 7px;
-  margin: 5px 3px 15px 3px;
+  margin: 5px 3px 15px;
   width: 90px;
   cursor: pointer;
 }
@@ -94,7 +94,7 @@ body {
   margin: 3px 5px;
   max-width: 80px;
   border-radius: 5px;
-  box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.05);
 }
 
 @media (max-width: 500px) {

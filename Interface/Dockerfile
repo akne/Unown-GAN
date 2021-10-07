@@ -1,8 +1,7 @@
 FROM node:16-alpine as build
 COPY . /interface
 WORKDIR /interface
-RUN npm install
-RUN npm run build
+RUN npm install && npm run build
 
 FROM nginx:stable-alpine
 COPY --from=build /interface/build/ /usr/share/nginx/html

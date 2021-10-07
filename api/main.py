@@ -1,8 +1,11 @@
-from flask import Flask, send_file;
-from flask_cors import CORS;
-from flask_restful import reqparse, Resource, Api;
+import sys
+import getopt
 
-from gan_api import GenerativeAPI;
+from flask import Flask, send_file
+from flask_cors import CORS
+from flask_restful import reqparse, Resource, Api
+
+from gan_api import GenerativeAPI
 from daemon import Daemon
 
 app = Flask(__name__)
@@ -56,4 +59,18 @@ api.add_resource(Interpolate, "/interpolate")
 api.add_resource(BulkGenerate, "/bulk")
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0")
+    host = "0.0.0.0"
+    port = 5000
+    if len(sys.argv) > 1:
+        args = sys.argv[1:]
+        opts = "h:p:"
+        optl = ["host=", "port="]
+
+        arg_f, vals = getopt.getopt(args, opts, optl)
+
+        for arg, val in arg_f:
+            if arg in ("-h", "--host"):
+                host = val
+            elif arg in ("-p", "--port"):
+                port = val
+    app.run(host=host, port=port)

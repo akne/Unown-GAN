@@ -34,18 +34,18 @@ class GenerativeAPI():
         g = "-".join([str(arg) for arg in args])
         return hash(g)
 
-    def check_exists(self, hash, ftype="image"):
+    def check_exists(self, hash_v, ftype="image"):
         """
         Returns the file path if the request has already been fulfilled
         previously.
         """
         path = CFGParser().get_path()
         if ftype == "image":
-            path = "{0}/img/{1}.png".format(path, hash)
+            path = "{0}/img/{1}.png".format(path, hash_v)
         elif ftype == "zip":
-            path = "{0}/{1}.zip".format(path, hash)  
+            path = "{0}/{1}.zip".format(path, hash_v)  
         else:
-            path = "{0}/{1}.gif".format(path, hash)               
+            path = "{0}/{1}.gif".format(path, hash_v)               
 
         if os.path.exists(path):
             return path, True
@@ -123,7 +123,7 @@ class GenerativeAPI():
             img.save(fname, format="PNG")
 
         fzip = ZipFile(path, "w")
-        for i in range(len(fnames)):
+        for i, _ in enumerate(fnames):
             fzip.write(fnames[i], "{0}-{1}.png".format(name, i))
         fzip.close()
 
